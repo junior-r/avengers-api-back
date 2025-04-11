@@ -4,7 +4,8 @@ export const userSchema = z.object({
     email: z.string().email({ message: "Invalid email address" }),
     password: z.string().min(6).max(20),
     passwordConfirm: z.string().min(6).max(20),
-    name: z.string().min(2).max(20)
+    name: z.string().min(2).max(20),
+    lastName: z.string().min(2).max(20)
 })
 
 export const userLoginSchema = z.object({

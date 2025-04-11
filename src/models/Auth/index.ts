@@ -27,7 +27,8 @@ export class AuthModel {
                 data: {
                     email: data.email,
                     password: hashedPassword,
-                    name: data.name
+                    name: data.name,
+                    lastName: data.lastName
                 }
             })
             return {
