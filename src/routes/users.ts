@@ -24,9 +24,7 @@ export const createUserRouter = () => {
 
     usersRouter.get("/:id", userController.getUser)
 
-    usersRouter.patch("/:id", (_req, res) => {
-        res.send("Update a user")
-    })
+    usersRouter.patch("/:id", userController.update)
 
     usersRouter.delete("/:id", (_req, res) => {
         res.send("Delete a user")
