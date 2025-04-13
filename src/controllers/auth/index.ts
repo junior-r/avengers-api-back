@@ -3,6 +3,7 @@ import { AuthModel } from "../../models/Auth"
 import { validateUser, validateUserLogin } from "../../schemas/users"
 import { config } from '../../config'
 import jwt from 'jsonwebtoken'
+import { logoutUser } from "../../utils/logoutUser"
 
 const { SECRET_JWT_KEY, SECRET_REFRESH_KEY, COOKIE_OPTIONS } = config
 
@@ -34,7 +35,7 @@ export class AuthController {
             }).cookie('refresh_token', refreshToken, {
                 ...COOKIE_OPTIONS,
                 maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-            }).status(200).send(user)
+            }).status(200).send({ user: user, message: "Logged in successfully" })
         } catch (_error) {
             res.status(401).send("Invalid credentials")
         }
@@ -57,7 +58,7 @@ export class AuthController {
             }
 
             const newUser = await this.model.create({ data: result.data })
-            res.status(201).json(newUser)
+            res.status(201).send({ user: newUser, message: "Account created successfully. Please login" })
         } catch (error) {
             if (error instanceof Error) {
                 res.status(400).json({ error: error.message })
@@ -66,5 +67,9 @@ export class AuthController {
             res.status(500).json({ error: "Internal server error" })
         }
         return
+    }
+
+    logout = async (req: Request, res: Response) => {
+        logoutUser(req, res)
     }
 }

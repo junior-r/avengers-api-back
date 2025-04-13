@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client"
-import { UserUpdate } from "../../schemas/users"
+import { UserChangePassword, UserUpdate } from "../../schemas/users"
+import bcrypt from "bcryptjs"
+import { config } from '../../config'
+
+const { SALT_ROUNDS } = config
 
 
 const prisma = new PrismaClient()
@@ -39,6 +43,40 @@ export class UserModel {
             return user
         } catch (error) {
             throw new Error("Error at update user")
+        }
+    }
+
+    static async changePassword({ id, data }: { id: string, data: UserChangePassword }) {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id }
+            })
+            if (!user) {
+                throw new Error("User not found")
+            }
+
+            const isValidPassword = await bcrypt.compare(data.currentPassword, user.password)
+            if (!isValidPassword) {
+                throw new Error("Invalid password")
+            }
+
+            const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS)
+            const userChanged = await prisma.user.update({
+                where: { id: user.id },
+                data: { password: hashedPassword },
+                omit: { password: true }
+            })
+            if (!userChanged) {
+                throw new Error("User not found")
+            }
+
+            return userChanged
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message)
+            } else {
+                throw new Error("Error at update user")
+            }
         }
     }
 }

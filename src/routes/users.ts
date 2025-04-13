@@ -26,6 +26,8 @@ export const createUserRouter = () => {
 
     usersRouter.patch("/:id", userController.update)
 
+    usersRouter.patch("/change-password/:id", userController.changePassword)
+
     usersRouter.delete("/:id", (_req, res) => {
         res.send("Delete a user")
     })

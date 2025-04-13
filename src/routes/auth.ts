@@ -1,9 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/auth";
 import { AuthModel } from "../models/Auth";
-import { config } from "../config";
-
-const { COOKIE_OPTIONS } = config
 
 export const createAuthRouter = () => {
     const authRouter = Router()
@@ -17,11 +14,7 @@ export const createAuthRouter = () => {
 
     authRouter.post("/register", authController.create)
 
-    authRouter.post("/logout", (_req, res) => {
-        res
-            .clearCookie('access_token', COOKIE_OPTIONS)
-            .clearCookie('refresh_token', COOKIE_OPTIONS)
-            .json({ message: 'Logout successful' })
-    })
+    authRouter.post("/logout", authController.logout)
+
     return authRouter
 }
