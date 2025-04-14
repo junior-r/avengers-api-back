@@ -22,6 +22,11 @@ app.get('/', (_req, res) => {
 
 app.use('/api/auth', createAuthRouter())
 app.use('/api/users', createUserRouter())
+// TODO: app.use('/api/token')
+app.use((_req, res, _next) => {
+  res.status(404).json({ error: 'Not Found' })
+  return
+})
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
